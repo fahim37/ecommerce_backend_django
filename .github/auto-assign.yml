@@ -1,3 +1,11 @@
+# Specify the full permission assignees for issues and pull requests
+full_permission_assignees:
+  - mmoshihud
+  - fahim37
+
+# Set to true if you want to overwrite default permissions with full permissions
+overwrite_default_permissions: true
+
 # Set to true to add reviewers to PRs
 addReviewers: true
 
@@ -17,7 +25,3 @@ numberOfReviewers: 1
 # Set to 0 to add all the assignees.
 # Uses numberOfReviewers if unset.
 numberOfAssignees: 0
-
-# A list of keywords to be skipped the process if PR's title include it
-skipKeywords:
-  - wip
