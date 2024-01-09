@@ -1,0 +1,26 @@
+name: Auto Assign and Request Reviewer
+
+on:
+  pull_request:
+    types:
+      - opened
+
+jobs:
+  auto_assign_and_review:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Auto Assign
+      uses: actions/assignee@v2
+      with:
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        assignees: fahim37, mmoshihud  # Add the GitHub usernames you want to assign
+
+    - name: Request Reviewer
+      uses: actions/request-reviewer@v2
+      with:
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        reviewers: fahim37, mmoshihud  # Add the GitHub usernames you want to request as reviewers
