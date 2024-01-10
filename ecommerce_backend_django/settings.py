@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "dotenv",
     "rest_framework",
     "product",
+    "versatileimagefield",
 ]
 
 MIDDLEWARE = [
