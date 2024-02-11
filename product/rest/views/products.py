@@ -5,14 +5,45 @@ from product.models import Product
 from product.rest.serializers.products import ProductSerializer
 
 
-class ProductList(APIView):
-    def get(self, request):
-        products = Product.objects.all()
-        serializer = ProductSerializer(products, many=True)
+class ProductAPI(APIView):
+    def get(self, request, pk=None, format=None):
+        id = pk
+        if id is not None:
+            product = Product.objects.get(id=id)
+            serializer = ProductSerializer(product)
+            return Response(serializer.data)
+
+        product = Product.objects.all()
+        serializer = ProductSerializer(product, many=True)
         return Response(serializer.data)
 
-    def get(self, pk):
-        try:
-            return Product.objects.get(pk=pk)
-        except Product.DoesNotExist:
-            raise Http404
+    def post(self, request, format=None):
+        serializer = ProductSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"msg": "Product Created"}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, pk, format=None):
+        id = pk
+        product = Product.objects.get(id=id)
+        serializer = ProductSerializer(product, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"msg": "Product Updated"})
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def patch(self, request, pk, format=None):
+        id = pk
+        product = Product.objects.get(id=id)
+        serializer = ProductSerializer(product, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"msg": "Partial Product Updated"})
+        return Response(serializer.errors)
+
+    def delete(self, request, pk, format=None):
+        id = pk
+        product = Product.objects.get(id=id)
+        product.delete()
+        return Response({"msg": "Product Deleted"})

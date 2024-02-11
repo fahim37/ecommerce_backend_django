@@ -17,9 +17,9 @@ class Product(BaseModel):
         upload_to="images/testimagemodel/",
         width_field="width",
         height_field="height",
+        blank=True,
+        null=True,
     )
-    height = models.PositiveIntegerField("Image Height", blank=True, null=True)
-    width = models.PositiveIntegerField("Image Width", blank=True, null=True)
     category = models.ForeignKey(
         "Category", on_delete=models.CASCADE, blank=True, null=True
     )
