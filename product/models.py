@@ -1,5 +1,6 @@
 from django.db import models
 from product.utils import BaseModel
+from versatileimagefield.fields import VersatileImageField
 
 
 class Category(BaseModel):
@@ -12,13 +13,10 @@ class Product(BaseModel):
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     discount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     stock = models.PositiveIntegerField(blank=True, null=True)
-    image = models.ImageField(
-        "Image",
+    image = VersatileImageField(
         upload_to="images/testimagemodel/",
-        width_field="width",
-        height_field="height",
-        blank=True,
         null=True,
+        blank=True,
     )
     category = models.ForeignKey(
         "Category", on_delete=models.CASCADE, blank=True, null=True
