@@ -14,7 +14,6 @@ class Product(BaseModel):
     discount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     stock = models.PositiveIntegerField(blank=True, null=True)
     image = VersatileImageField(
-        upload_to="images/testimagemodel/",
         null=True,
         blank=True,
     )
