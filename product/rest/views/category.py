@@ -21,7 +21,10 @@ class CategoryAPI(APIView):
         serializer = CategorySerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response({"msg": "Category Created"}, status=status.HTTP_201_CREATED)
+            return Response(
+                {"msg": "Category Created", "data": serializer.data},
+                status=status.HTTP_201_CREATED,
+            )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request, pk, format=None):
@@ -30,7 +33,7 @@ class CategoryAPI(APIView):
         serializer = CategorySerializer(category, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response({"msg": "Category Updated"})
+            return Response({"msg": "Category Updated", "data": serializer.data})
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def patch(self, request, pk, format=None):
@@ -39,11 +42,13 @@ class CategoryAPI(APIView):
         serializer = CategorySerializer(category, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            return Response({"msg": "Partial Category Updated"})
+            return Response(
+                {"msg": "Partial Category Updated", "data": serializer.data}
+            )
         return Response(serializer.errors)
 
     def delete(self, request, pk, format=None):
         id = pk
         category = Category.objects.get(id=id)
         category.delete()
-        return Response({"msg": "Category Deleted"})
+        return Response({"msg": "Category Deleted", "data": serializer.data})
