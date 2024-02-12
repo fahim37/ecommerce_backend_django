@@ -5,7 +5,7 @@ from product.models import Category
 from product.rest.serializers.products import CategorySerializer
 
 
-class ProductAPI(APIView):
+class CategoryAPI(APIView):
     def get(self, request, pk=None, format=None):
         id = pk
         if id is not None:
