@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     "dotenv",
     "rest_framework",
     "product",
+    "orders",
+    "users",
     "versatileimagefield",
 ]
 
