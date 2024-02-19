@@ -1,5 +1,7 @@
 from django.db import models
+
 from product.utils import BaseModel
+
 from versatileimagefield.fields import VersatileImageField
 
 

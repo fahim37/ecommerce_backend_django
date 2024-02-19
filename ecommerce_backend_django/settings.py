@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "orders",
     "users",
     "versatileimagefield",
+    "drf_spectacular",
 ]
 
 MIDDLEWARE = [
@@ -142,3 +143,8 @@ MEDIA_DIR = os.path.realpath(os.path.join(HOME_DIR, "media"))
 MEDIA_ROOT = MEDIA_DIR
 
 MEDIA_URL = "/media/"
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
