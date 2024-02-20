@@ -5,6 +5,8 @@ from product.models import Product
 
 from versatileimagefield.serializers import VersatileImageFieldSerializer
 
+from product.rest.serializers.review import ReviewSerializer
+
 
 class ProductSerializer(serializers.ModelSerializer):
     name = serializers.CharField(max_length=100, required=True)
@@ -19,10 +21,11 @@ class ProductSerializer(serializers.ModelSerializer):
     category = serializers.SlugRelatedField(
         queryset=Category.objects.all(), slug_field="slug", required=False
     )
+    reviews = ReviewSerializer(source="review_set", many=True, read_only=True)
 
     class Meta:
         model = Product
-        fields = ["id", "name", "description", "price", "image", "category", "stock"]
+        fields = "__all__"
 
 
 class CategorySerializer(serializers.ModelSerializer):

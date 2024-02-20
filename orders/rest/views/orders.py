@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from core.serializers import AddressSerializer
-from orders.models import Cart, Order, OrderProduct
+from orders.models import Cart, Order, OrderProduct, Transaction
 from orders.rest.serializers.orders import OrderSerializer
 
 
@@ -45,6 +45,10 @@ class OrderListView(APIView):
                     * (1 - cart.product.discount / 100)
                 )
                 cart.delete()
+
+            Transaction.objects.create(
+                amount=total_price, status="Paid", order=serializer.save()
+            )
 
             serializer.validated_data["order_price"] = total_price
 

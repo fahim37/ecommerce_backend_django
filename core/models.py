@@ -13,8 +13,6 @@ class Address(BaseModel):
 
 
 class Review(BaseModel):
-    rating = models.PositiveIntegerField()
+    rating = models.PositiveIntegerField(blank=True, null=True)
     review = models.TextField(blank=True, null=True)
-    product = models.ForeignKey(
-        Product, on_delete=models.CASCADE, blank=True, null=True
-    )
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
