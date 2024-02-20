@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.text import slugify
 
-from product.utils import BaseModel
+from core.utils import BaseModel
 
 from versatileimagefield.fields import VersatileImageField
 

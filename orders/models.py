@@ -1,6 +1,6 @@
 from django.db import models
 from core.models import Address
-from orders.utils import BaseModel
+from core.utils import BaseModel
 from product.models import Product
 
 
@@ -52,3 +52,9 @@ class Cart(BaseModel):
         Product, on_delete=models.CASCADE, blank=True, null=True
     )
     quantity = models.PositiveIntegerField(blank=True, null=True)
+
+
+class Transaction(BaseModel):
+    amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    status = models.CharField(max_length=255, blank=True, null=True)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, blank=True, null=True)
