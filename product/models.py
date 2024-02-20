@@ -14,7 +14,7 @@ class Product(BaseModel):
     description = models.TextField(blank=True, null=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     discount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-    stock = models.PositiveIntegerField(blank=True, null=True)
+    stock = models.PositiveIntegerField(default=0)
     image = VersatileImageField(
         null=True,
         blank=True,

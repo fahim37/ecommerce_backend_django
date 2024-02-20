@@ -1,40 +1,59 @@
+from decimal import Decimal
 from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from orders.models import Order
+from orders.models import Cart, Order, OrderProduct
 from orders.rest.serializers.orders import OrderSerializer
 
 
-class OrderAPI(APIView):
+class OrderListView(APIView):
 
     def get(self, request, pk=None, format=None):
-        user = self.request.user
-        if pk is None:
-            if user.is_staff:
-                orders = Order.objects.all()
-            else:
-                orders = Order.objects.filter(user=user)
-            serializer = OrderSerializer(orders, many=True)
-            return Response(serializer.data)
-        else:
-            try:
-                order = Order.objects.get(pk=pk)
-            except Order.DoesNotExist:
-                return Response(
-                    {"message": "Order not found"}, status=status.HTTP_404_NOT_FOUND
-                )
-            serializer = OrderSerializer(order)
-            return Response(serializer.data)
+
+        try:
+            orders = Order.objects.all()
+        except Order.DoesNotExist:
+            return Response(
+                {"message": "No orders found"}, status=status.HTTP_404_NOT_FOUND
+            )
+        serializer = OrderSerializer(orders, many=True)
+        return Response(serializer.data)
 
     def post(self, request, format=None):
         serializer = OrderSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save(user=self.request.user)
+            cart_products = Cart.objects.all()
+            total_price = Decimal(0)
+
+            for cart in cart_products:
+                OrderProduct.objects.create(
+                    product=cart.product,
+                    quantity=cart.quantity,
+                    order=serializer.save(),
+                )
+                total_price += cart.product.price * cart.quantity
+                cart.delete()
+
+            serializer.validated_data["order_price"] = total_price
+            serializer.save()
+
             return Response(
                 {"message": "Order created"}, status=status.HTTP_201_CREATED
             )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class OrderDetailView(APIView):
+    def get(self, request, pk, format=None):
+        try:
+            order = Order.objects.get(pk=pk)
+        except Order.DoesNotExist:
+            return Response(
+                {"message": "Order not found"}, status=status.HTTP_404_NOT_FOUND
+            )
+        serializer = OrderSerializer(order)
+        return Response(serializer.data)
 
     def put(self, request, pk, format=None):
         try:
