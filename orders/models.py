@@ -1,4 +1,5 @@
 from django.db import models
+from core.models import Address
 from orders.utils import BaseModel
 from product.models import Product
 
@@ -10,7 +11,9 @@ class Order(BaseModel):
         max_digits=10, decimal_places=2, blank=True, null=True
     )
     delivery_date = models.DateField(blank=True, null=True)
-    address = models.CharField(max_length=255, blank=True, null=True)
+    address = models.ForeignKey(
+        Address, on_delete=models.SET_NULL, blank=True, null=True
+    )
     status = models.CharField(max_length=255, blank=True, null=True)
 
     def save(self, *args, **kwargs):
@@ -37,6 +40,11 @@ class OrderProduct(BaseModel):
             item.selling_price for item in order.orderproduct_set.all()
         )
         order.save()
+
+        product = self.product
+        product.stock -= self.quantity
+
+        product.save()
 
 
 class Cart(BaseModel):

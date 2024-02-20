@@ -3,12 +3,12 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from core.serializers import AddressSerializer
 from orders.models import Cart, Order, OrderProduct
 from orders.rest.serializers.orders import OrderSerializer
 
 
 class OrderListView(APIView):
-
     def get(self, request, pk=None, format=None):
 
         try:
@@ -38,11 +38,24 @@ class OrderListView(APIView):
                     quantity=cart.quantity,
                     order=serializer.save(),
                 )
-                total_price += cart.product.price * cart.quantity
+                # calculate the total price checking discount
+                total_price += (
+                    cart.product.price
+                    * cart.quantity
+                    * (1 - cart.product.discount / 100)
+                )
                 cart.delete()
 
             serializer.validated_data["order_price"] = total_price
-            serializer.save()
+
+            address_data = request.data.get("address", {})
+            address_serializer = AddressSerializer(data=address_data)
+
+            # Validate and create the address instance
+            if address_serializer.is_valid():
+                address_instance = address_serializer.save()
+
+            serializer.save(address=address_instance, **serializer.validated_data)
 
             return Response(
                 {"message": "Order created"}, status=status.HTTP_201_CREATED

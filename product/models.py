@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.text import slugify
 
 from product.utils import BaseModel
 
@@ -7,6 +8,11 @@ from versatileimagefield.fields import VersatileImageField
 
 class Category(BaseModel):
     name = models.CharField(max_length=255, blank=True, null=True)
+    slug = models.SlugField(max_length=255, unique=True, blank=True, null=True)
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
 
 
 class Product(BaseModel):

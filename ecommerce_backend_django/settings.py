@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "product",
     "orders",
     "users",
+    "core",
     "versatileimagefield",
     "drf_spectacular",
 ]
@@ -146,5 +147,5 @@ MEDIA_URL = "/media/"
 
 
 REST_FRAMEWORK = {
-    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }

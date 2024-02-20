@@ -16,6 +16,9 @@ class ProductSerializer(serializers.ModelSerializer):
         ],
         required=False,
     )
+    category = serializers.SlugRelatedField(
+        queryset=Category.objects.all(), slug_field="slug", required=False
+    )
 
     class Meta:
         model = Product
