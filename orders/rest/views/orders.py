@@ -26,6 +26,12 @@ class OrderListView(APIView):
             cart_products = Cart.objects.all()
             total_price = Decimal(0)
 
+            if not cart_products:
+                return Response(
+                    {"message": "No products in cart"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
             for cart in cart_products:
                 OrderProduct.objects.create(
                     product=cart.product,
