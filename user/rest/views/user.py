@@ -1,7 +1,6 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import authenticate
 from user.renderer import UserRenderer
 from user.rest.serializers.user import (
@@ -10,6 +9,12 @@ from user.rest.serializers.user import (
     UserProfileSerializer,
 )
 from rest_framework_simplejwt.tokens import RefreshToken
+from django.contrib.auth import get_user_model
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.permissions import IsAuthenticated
+
+
+User = get_user_model()
 
 
 # generate token manually
@@ -17,8 +22,8 @@ def get_tokens_for_user(user):
     refresh = RefreshToken.for_user(user)
 
     return {
-        "refresh": str(refresh),
-        "access": str(refresh.access_token),
+        "Access Token": str(refresh.access_token),
+        "Refresh Token": str(refresh),
     }
 
 
@@ -34,7 +39,6 @@ class UserRegistrationView(APIView):
                 {"token": token, "msg": "Registration Successfull"},
                 status=status.HTTP_201_CREATED,
             )
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserLoginView(APIView):
@@ -46,10 +50,11 @@ class UserLoginView(APIView):
             email = serializer.data.get("email")
             password = serializer.data.get("password")
             user = authenticate(email=email, password=password)
+
             if user is not None:
                 token = get_tokens_for_user(user)
                 return Response(
-                    {"token": token, "msg": "login successful"},
+                    token,
                     status=status.HTTP_200_OK,
                 )
             else:
@@ -61,7 +66,6 @@ class UserLoginView(APIView):
                     },
                     status=status.HTTP_404_NOT_FOUND,
                 )
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserProfileView(APIView):

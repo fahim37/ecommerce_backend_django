@@ -1,7 +1,9 @@
-from django.contrib.auth.models import User
 from django.core.management import BaseCommand
 from django.db import connection
 from django.core.management import call_command
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 
 class Command(BaseCommand):
@@ -19,11 +21,8 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS("Database reset successfully."))
 
         User.objects.create_superuser(
-            username="moshihud",
-            password="123456",
-        )
-        User.objects.create_superuser(
-            username="admin",
+            email="admin@gmail.com",
+            name="Super Admin",
             password="123456",
         )
         self.stdout.write("Successfully created super user")
